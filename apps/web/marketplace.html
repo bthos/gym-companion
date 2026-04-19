@@ -137,7 +137,8 @@
         out.textContent = JSON.stringify(x, null, 2);
       }
 
-      $('baseUrl').value = localStorage.getItem(LS_BASE) || 'http://127.0.0.1:3000';
+      $('baseUrl').value =
+      localStorage.getItem(LS_BASE) || 'https://gym-companion-plv9.onrender.com';
       $('apiKey').value = localStorage.getItem(LS_KEY) || '';
 
       $('baseUrl').addEventListener('change', () => localStorage.setItem(LS_BASE, $('baseUrl').value));

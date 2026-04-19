@@ -223,6 +223,7 @@ If any session still references the provider’s `gymProviderId`, the API return
 | `MARKETPLACE_ALLOW_DEV_BODY` | Set to `1` / `true` to allow `{ basicfitBundle }` installs without remote fetch |
 | `MARKETPLACE_WORKSPACE_SCOPING` | Set to `1` / `true` to enable `X-Workspace-Id` on installs and `?workspaceId=` filtering on listings |
 | `MARKETPLACE_SIGNING_PUBLIC_KEY_BASE64` | Optional 32-byte Ed25519 public key (base64); when set, packages must include `integrity.ed25519Signature` (see [`docs/marketplace.md`](marketplace.md)) |
+| `MARKETPLACE_CORS_ORIGINS` | Comma-separated allowed `Origin` values for browser `fetch` from static UIs (e.g. `https://gym-companion-marketplace-ui.onrender.com`). Adds CORS headers and `OPTIONS` preflight for `/api/*` when `Origin` matches. |
 | `GYM_COMPANION_API_KEY` | Optional API key gate |
 | `GYM_COMPANION_WEBHOOK_SECRET` | Optional HMAC secret for Pipedream |
 | `GOOGLE_FIT_CLIENT_ID` / `GOOGLE_FIT_CLIENT_SECRET` | Google OAuth client |

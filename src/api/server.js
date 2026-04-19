@@ -22,7 +22,33 @@ export function getEnv() {
     MARKETPLACE_ALLOW_DEV_BODY: process.env.MARKETPLACE_ALLOW_DEV_BODY || '',
     MARKETPLACE_MAX_PACKAGE_BYTES: process.env.MARKETPLACE_MAX_PACKAGE_BYTES || '',
     MARKETPLACE_WORKSPACE_SCOPING: process.env.MARKETPLACE_WORKSPACE_SCOPING || '',
-    MARKETPLACE_SIGNING_PUBLIC_KEY_BASE64: process.env.MARKETPLACE_SIGNING_PUBLIC_KEY_BASE64 || ''
+    MARKETPLACE_SIGNING_PUBLIC_KEY_BASE64: process.env.MARKETPLACE_SIGNING_PUBLIC_KEY_BASE64 || '',
+    MARKETPLACE_CORS_ORIGINS: process.env.MARKETPLACE_CORS_ORIGINS || ''
+  };
+}
+
+function parseCorsAllowedOrigins(env) {
+  const raw = env.MARKETPLACE_CORS_ORIGINS || '';
+  return new Set(
+    raw
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  );
+}
+
+/** @returns {Record<string, string> | null} */
+function corsHeadersForRequest(req, env) {
+  const origin = req.headers.origin;
+  if (!origin || typeof origin !== 'string') return null;
+  const allowed = parseCorsAllowedOrigins(env);
+  if (!allowed.has(origin)) return null;
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, PATCH, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-API-Key, Idempotency-Key',
+    'Access-Control-Max-Age': '86400',
+    Vary: 'Origin'
   };
 }
 
@@ -37,6 +63,23 @@ export function createApp(storePath) {
       const host = req.headers.host || 'localhost';
       const url = new URL(req.url || '/', `http://${host}`);
       const pathname = url.pathname;
+      const cors = corsHeadersForRequest(req, env);
+      if (cors && req.method === 'OPTIONS' && pathname.startsWith('/api')) {
+        res.writeHead(204, cors);
+        res.end();
+        return;
+      }
+      if (cors) {
+        const origWriteHead = res.writeHead.bind(res);
+        res.writeHead = (code, msgOrHeaders, maybeHeaders) => {
+          if (typeof msgOrHeaders === 'string') {
+            const headers = { ...cors, ...(maybeHeaders && typeof maybeHeaders === 'object' ? maybeHeaders : {}) };
+            return origWriteHead(code, msgOrHeaders, headers);
+          }
+          const headers = { ...cors, ...(msgOrHeaders && typeof msgOrHeaders === 'object' ? msgOrHeaders : {}) };
+          return origWriteHead(code, headers);
+        };
+      }
       const route = match(req.method || 'GET', pathname);
       if (!route) {
         res.writeHead(404, { 'content-type': 'application/json; charset=utf-8' });
