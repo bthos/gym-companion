@@ -194,7 +194,7 @@ Returns `{ catalogSchemaVersion, updates[] }` comparing `installedPackages` in t
 
 ### `POST /api/marketplace/install`
 
-- **Catalog install:** `{ "packageId": string, "version": string }` — resolves the row from the catalog, then loads the payload from `download.url` **or** shipped-sample `download.artifactPath` under `data/marketplace/samples/`. Remote `url` requires `MARKETPLACE_DOWNLOAD_HOSTS` and matching `integrity.sha256`. Max response size is capped by `MARKETPLACE_MAX_PACKAGE_BYTES` (default 50MB).
+- **Catalog install:** `{ "packageId": string, "version": string }` — resolves the row from the catalog, then loads the payload from `download.url` (e.g. `raw.githubusercontent.com/...`) **or** legacy `download.artifactPath` under `data/marketplace/samples/` on the API host. Remote `url` requires `MARKETPLACE_DOWNLOAD_HOSTS` and matching `integrity.sha256`. Max response size is capped by `MARKETPLACE_MAX_PACKAGE_BYTES` (default 50MB).
 - **Manifest URL:** `{ "manifestUrl": string }` — fetches a single package manifest JSON from an allowed host (`MARKETPLACE_MANIFEST_HOSTS` if set, otherwise the same list as `MARKETPLACE_DOWNLOAD_HOSTS`), then installs like a catalog row (including `artifactPath` or remote `url`).
 - **Dev inline:** with `MARKETPLACE_ALLOW_DEV_BODY=1`, `{ "basicfitBundle": { ... } }` same shape as `POST /api/gym-providers/import/basicfit`.
 

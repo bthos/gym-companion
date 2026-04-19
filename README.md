@@ -21,7 +21,7 @@ Create routines with Perplexity or other AI tools, sync them into the app, and u
 
 **Basic-Fit** (or any operator) is **not** auto-imported on server start. Use one of:
 
-- **Marketplace:** `[data/marketplace/catalog.json](data/marketplace/catalog.json)` lists packages; `POST /api/marketplace/install` installs from a hosted URL when `MARKETPLACE_DOWNLOAD_HOSTS` and checksums are configured (see `[docs/marketplace.md](docs/marketplace.md)`).
+- **Marketplace:** `[data/marketplace/catalog.json](data/marketplace/catalog.json)` lists packages; sample payloads are fetched from **GitHub** (`raw.githubusercontent.com/.../data/marketplace/samples/...`). Set `MARKETPLACE_DOWNLOAD_HOSTS` to include `raw.githubusercontent.com` (see `[docs/marketplace.md](docs/marketplace.md)`).
 - **HTTP import:** `POST /api/gym-providers/import/basicfit` with the combined gyms + equipment JSON.
 - **CLI:** `npm run import:basicfit` (from `basicfit-rutina` or `BUNDLE_PATH`), or `npm run seed:basicfit` to build `data/marketplace/dist/basicfit-malaga.bundle.json` for hosting.
 

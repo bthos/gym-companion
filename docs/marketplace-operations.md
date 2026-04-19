@@ -8,6 +8,6 @@ Use this checklist when taking the marketplace from “code exists” to “oper
 4. **Publisher allowlist (optional):** set `MARKETPLACE_PUBLISHER_ALLOWLIST` to comma-separated publisher ids; each catalog row’s `publisher` must match when the allowlist is non-empty.
 5. **Point production at a stable catalog:** set `MARKETPLACE_CATALOG_URL` to an HTTPS URL for the catalog JSON (separate from the app repo is recommended).
 
-**Shipped samples:** this repo includes small JSON under `data/marketplace/samples/` wired through `artifactPath` in [`data/marketplace/catalog.json`](../data/marketplace/catalog.json) so `POST /api/marketplace/install` works **without** `MARKETPLACE_DOWNLOAD_HOSTS` for those rows only (no remote fetch).
+**Shipped samples:** sample bundles live in [`data/marketplace/samples/`](../data/marketplace/samples/) in GitHub; the default [`data/marketplace/catalog.json`](../data/marketplace/catalog.json) points at **`https://raw.githubusercontent.com/<owner>/<repo>/main/...`** so installs fetch from GitHub. Set `MARKETPLACE_DOWNLOAD_HOSTS` to include **`raw.githubusercontent.com`** (and adjust URLs if you use a fork or another branch).
 
 See also [`docs/marketplace.md`](marketplace.md) and [`docs/api.md`](api.md).

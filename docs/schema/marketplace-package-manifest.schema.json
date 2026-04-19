@@ -27,7 +27,7 @@
         "format": { "type": "string", "description": "e.g. basicfit-bundle, gym-provider-json" },
         "artifactPath": {
           "type": "string",
-          "description": "Repo-relative path under data/marketplace/samples/ (no ..); alternative to non-empty download.url for shipped samples"
+          "description": "Legacy: repo-relative path under data/marketplace/samples/ on the API host. Prefer download.url (e.g. raw.githubusercontent.com) so packages live in Git."
         }
       }
     },

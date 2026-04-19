@@ -5,7 +5,7 @@ Gym **operators** (chains, catalogs of sites and equipment) are distributed as *
 ## Concepts
 
 - **Catalog** — index of package manifests (`schemaVersion`, `packages[]`). Served locally as `[data/marketplace/catalog.json](../data/marketplace/catalog.json)` or remotely via `MARKETPLACE_CATALOG_URL`.
-- **Manifest** — one catalog row: `packageId`, `version`, `vendor`, `displayName`, optional `publisher`, `regions`, `capabilities`, `download` (`url` **or** `artifactPath`, `format`), `integrity` (`sha256` required when a payload source is set). Optional Ed25519 fields: `integrity.ed25519Signature`, `integrity.ed25519PublicKey` (see **Trust** below).
+- **Manifest** — one catalog row: `packageId`, `version`, `vendor`, `displayName`, optional `publisher`, `regions`, `capabilities`, `download` (`url` **or** optional legacy `artifactPath`, `format`), `integrity` (`sha256` required when a payload source is set). Optional Ed25519 fields: `integrity.ed25519Signature`, `integrity.ed25519PublicKey` (see **Trust** below). Default sample packages use **`download.url`** on **`raw.githubusercontent.com`** so payloads are versioned in Git, not read from the API server disk.
 - **Installation** — record in the JSON store (`installedPackages`) linking `packageId` to `providerId` after a successful install. Reserved fields: `userId`, `workspaceId` (used when `MARKETPLACE_WORKSPACE_SCOPING=1` and `X-Workspace-Id` is sent).
 
 ## Staging vs production catalog
@@ -19,7 +19,7 @@ Run **two catalog URLs** (or two static files) in different environments:
 | Production  | `https://cdn.example.com/marketplace/catalog.json`         | Stable rows, stricter `MARKETPLACE_PUBLISHER_ALLOWLIST` / signing |
 
 
-Operators set `MARKETPLACE_CATALOG_URL` (or `MARKETPLACE_CATALOG_PATH`) per deployment. The repo’s default file includes **sample** rows that use `download.artifactPath` under `data/marketplace/samples/` so installs work without hosting payloads.
+Operators set `MARKETPLACE_CATALOG_URL` (or `MARKETPLACE_CATALOG_PATH`) per deployment. The default catalog’s sample rows use **`download.url`** pointing at **`raw.githubusercontent.com/.../data/marketplace/samples/...`**; configure `MARKETPLACE_DOWNLOAD_HOSTS` accordingly (see **Risks**).
 
 ## API (MVP)
 
@@ -37,7 +37,7 @@ Full request/response notes: `[docs/api.md](api.md)`.
 
 ### Install modes
 
-1. **Catalog:** `{ "packageId", "version" }` — row must include either non-empty `download.url` (remote, needs `MARKETPLACE_DOWNLOAD_HOSTS` + `integrity.sha256`) **or** `download.artifactPath` under `data/marketplace/samples/` + `integrity.sha256`.
+1. **Catalog:** `{ "packageId", "version" }` — row must include either non-empty `download.url` (remote, needs `MARKETPLACE_DOWNLOAD_HOSTS` + `integrity.sha256`) **or** legacy `download.artifactPath` under `data/marketplace/samples/` + `integrity.sha256` (server-local only).
 2. **Manifest URL:** `{ "manifestUrl" }` — fetch one manifest JSON from an allowed host (`MARKETPLACE_MANIFEST_HOSTS` or `MARKETPLACE_DOWNLOAD_HOSTS`), then same pipeline as a catalog row.
 3. **Dev/test:** `MARKETPLACE_ALLOW_DEV_BODY=1` and `{ "basicfitBundle": { ... } }` (same shape as `POST /api/gym-providers/import/basicfit`). Installation id `dev:<slug>`.
 
@@ -90,7 +90,7 @@ Without marketplace fetch, use:
 
 ## Risks
 
-- **SSRF:** mitigated by `MARKETPLACE_DOWNLOAD_HOSTS` / `MARKETPLACE_MANIFEST_HOSTS`; `artifactPath` is restricted to `data/marketplace/samples/` without `..`, resolved with `realpath` under that prefix. Catalog and package HTTP fetches use `redirect: 'manual'` so a first-hop allowed host cannot pivot via redirects to an internal URL.
+- **SSRF:** mitigated by `MARKETPLACE_DOWNLOAD_HOSTS` / `MARKETPLACE_MANIFEST_HOSTS`. Default sample URLs use **`raw.githubusercontent.com`** — add that host in production. Legacy `artifactPath` is restricted to `data/marketplace/samples/` without `..`, resolved with `realpath` under that prefix. Catalog and package HTTP fetches use `redirect: 'manual'` so a first-hop allowed host cannot pivot via redirects to an internal URL.
 - `**MARKETPLACE_CATALOG_URL`:** treat as **operator-controlled** (HTTPS URL to your catalog). There is no separate catalog-host allowlist; compromised catalog URLs can point installs at arbitrary allowed download hosts.
 - **Version ordering:** updates use string `localeCompare` with `{ numeric: true }`; consider a semver library if versions become complex.
 

@@ -223,9 +223,8 @@ test('marketplace install rejects publisher not in allowlist (M5)', async (t) =>
           displayName: 'X',
           publisher: 'untrusted-publisher',
           download: {
-            url: '',
-            format: 'gym-provider-json',
-            artifactPath: 'data/marketplace/samples/sandbox-gym-provider.json'
+            url: 'https://raw.githubusercontent.com/bthos/gym-companion/main/data/marketplace/samples/sandbox-gym-provider.json',
+            format: 'gym-provider-json'
           },
           integrity: {
             sha256: '399041182bbf4bbf7c260797f7c00357ba0b3a27a136be9e95d285e38223a356'
@@ -262,7 +261,7 @@ test('marketplace install rejects publisher not in allowlist (M5)', async (t) =>
   assert.equal(ins.body.error, 'PUBLISHER');
 });
 
-test('marketplace install from bundled catalog artifactPath without remote download hosts', async (t) => {
+test('marketplace install from catalog with GitHub raw package URLs', async (t) => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'gc-mp-art-'));
   const storePath = path.join(dir, 'store.json');
   t.after(async () => {
@@ -273,7 +272,7 @@ test('marketplace install from bundled catalog artifactPath without remote downl
   });
 
   process.env.MARKETPLACE_CATALOG_PATH = bundledCatalogPath;
-  delete process.env.MARKETPLACE_DOWNLOAD_HOSTS;
+  process.env.MARKETPLACE_DOWNLOAD_HOSTS = 'raw.githubusercontent.com';
   delete process.env.GYM_COMPANION_API_KEY;
 
   const { server } = createApp(storePath);
@@ -310,7 +309,7 @@ test('marketplace uninstall blocks when sessions reference provider unless force
   });
 
   process.env.MARKETPLACE_CATALOG_PATH = bundledCatalogPath;
-  delete process.env.MARKETPLACE_DOWNLOAD_HOSTS;
+  process.env.MARKETPLACE_DOWNLOAD_HOSTS = 'raw.githubusercontent.com';
   delete process.env.GYM_COMPANION_API_KEY;
 
   const { server } = createApp(storePath);
@@ -385,9 +384,8 @@ test('marketplace install by manifestUrl', async (t) => {
     vendor: 'sandbox',
     displayName: 'Manifest URL row',
     download: {
-      url: '',
-      format: 'gym-provider-json',
-      artifactPath: 'data/marketplace/samples/sandbox-gym-provider.json'
+      url: 'https://raw.githubusercontent.com/bthos/gym-companion/main/data/marketplace/samples/sandbox-gym-provider.json',
+      format: 'gym-provider-json'
     },
     integrity: {
       sha256: '399041182bbf4bbf7c260797f7c00357ba0b3a27a136be9e95d285e38223a356'
@@ -409,7 +407,7 @@ test('marketplace install by manifestUrl', async (t) => {
     delete process.env.GYM_COMPANION_API_KEY;
   });
 
-  process.env.MARKETPLACE_DOWNLOAD_HOSTS = '127.0.0.1';
+  process.env.MARKETPLACE_DOWNLOAD_HOSTS = '127.0.0.1,raw.githubusercontent.com';
   delete process.env.GYM_COMPANION_API_KEY;
 
   const { server } = createApp(storePath);
