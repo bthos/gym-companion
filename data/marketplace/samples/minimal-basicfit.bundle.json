@@ -1,0 +1,16 @@
+{
+  "id": "gp_sample_minimal",
+  "slug": "basicfit-sample-malaga",
+  "displayName": "Basic-Fit sample (minimal matrix bundle)",
+  "region": "ES-MA",
+  "gyms": {
+    "metadata": { "city": "Málaga" },
+    "gyms": [{ "id": 999001, "name": "Sample Club Matrix", "address": "1 Demo St" }]
+  },
+  "equipment": {
+    "metadata": {},
+    "equipment": [
+      { "id": "eq_demo_1", "gyms": [999001], "names": { "en": "Demo treadmill" } }
+    ]
+  }
+}

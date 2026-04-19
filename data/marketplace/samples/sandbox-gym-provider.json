@@ -1,0 +1,9 @@
+{
+  "provider": {
+    "slug": "sandbox-demo",
+    "displayName": "Sandbox marketplace vendor (gym-provider-json)",
+    "region": "ZZ-TEST",
+    "metadata": { "source": "marketplace-sandbox-sample" },
+    "sites": [{ "id": "sandbox_site_1", "name": "Sandbox site", "address": "0 Test Lane" }]
+  }
+}

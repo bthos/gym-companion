@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gym Companion — Marketplace</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+      body {
+        max-width: 52rem;
+        margin: 0 auto;
+        padding: 1.25rem;
+      }
+      h1 {
+        font-size: 1.35rem;
+      }
+      label {
+        display: block;
+        font-size: 0.8rem;
+        margin-top: 0.75rem;
+        color: #475569;
+      }
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.45rem 0.5rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        margin-top: 0.2rem;
+      }
+      button {
+        margin-top: 0.75rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 6px;
+        border: 1px solid #334155;
+        background: #1e293b;
+        color: #f8fafc;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #fff;
+        color: #1e293b;
+      }
+      pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 0.75rem;
+        border-radius: 8px;
+        overflow: auto;
+        font-size: 0.75rem;
+      }
+      ul {
+        padding-left: 1.1rem;
+      }
+      .row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+      .row > div {
+        flex: 1 1 12rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Marketplace</h1>
+    <p>
+      Minimal operator UI: load catalog, install by <code>packageId</code> + <code>version</code>, list
+      installations, uninstall. Configure API base URL and optional API key (stored in
+      <code>localStorage</code>).
+    </p>
+
+    <label for="baseUrl">API base URL</label>
+    <input id="baseUrl" type="url" placeholder="http://127.0.0.1:3000" autocomplete="off" />
+
+    <label for="apiKey">API key (optional)</label>
+    <input id="apiKey" type="password" autocomplete="off" placeholder="GYM_COMPANION_API_KEY" />
+
+    <div class="row">
+      <div>
+        <label for="packageId">packageId</label>
+        <input id="packageId" placeholder="eu.gym-companion.samples.minimal-basicfit" />
+      </div>
+      <div>
+        <label for="version">version</label>
+        <input id="version" placeholder="1.0.0" />
+      </div>
+    </div>
+
+    <button type="button" id="btnCatalog">Load catalog</button>
+    <button type="button" id="btnInstall" class="secondary">Install</button>
+    <button type="button" id="btnInstalled" class="secondary">List installations</button>
+
+    <label for="uninstallId">Uninstall packageId</label>
+    <input id="uninstallId" placeholder="eu.gym-companion.samples.minimal-basicfit" />
+    <button type="button" id="btnUninstall" class="secondary">Uninstall</button>
+
+    <h2>Output</h2>
+    <pre id="out">{}</pre>
+
+    <script>
+      const LS_BASE = 'gc_marketplace_baseUrl';
+      const LS_KEY = 'gc_marketplace_apiKey';
+      const $ = (id) => document.getElementById(id);
+      const out = $('out');
+
+      function headers() {
+        const h = { Accept: 'application/json' };
+        const key = $('apiKey').value.trim();
+        if (key) h['X-API-Key'] = key;
+        return h;
+      }
+
+      function base() {
+        return $('baseUrl').value.replace(/\/$/, '');
+      }
+
+      async function api(path, opts = {}) {
+        const url = base() + path;
+        const res = await fetch(url, { ...opts, headers: { ...headers(), ...(opts.headers || {}) } });
+        const text = await res.text();
+        let body;
+        try {
+          body = text ? JSON.parse(text) : null;
+        } catch {
+          body = text;
+        }
+        return { ok: res.ok, status: res.status, body };
+      }
+
+      function show(x) {
+        out.textContent = JSON.stringify(x, null, 2);
+      }
+
+      $('baseUrl').value = localStorage.getItem(LS_BASE) || 'http://127.0.0.1:3000';
+      $('apiKey').value = localStorage.getItem(LS_KEY) || '';
+
+      $('baseUrl').addEventListener('change', () => localStorage.setItem(LS_BASE, $('baseUrl').value));
+      $('apiKey').addEventListener('change', () => localStorage.setItem(LS_KEY, $('apiKey').value));
+
+      $('btnCatalog').onclick = async () => {
+        const r = await api('/api/marketplace/catalog');
+        show(r);
+      };
+      $('btnInstall').onclick = async () => {
+        const packageId = $('packageId').value.trim();
+        const version = $('version').value.trim();
+        const r = await api('/api/marketplace/install', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packageId, version })
+        });
+        show(r);
+      };
+      $('btnInstalled').onclick = async () => {
+        const r = await api('/api/marketplace/installations');
+        show(r);
+      };
+      $('btnUninstall').onclick = async () => {
+        const id = encodeURIComponent($('uninstallId').value.trim());
+        const r = await api('/api/marketplace/installations/' + id, { method: 'DELETE' });
+        show(r);
+      };
+    </script>
+  </body>
+</html>

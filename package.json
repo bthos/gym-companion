@@ -1,0 +1,14 @@
+{
+  "name": "gym-companion",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Gym routine companion with API-first design for Perplexity/Pipedream integration",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/api/server.js",
+    "start": "node src/api/server.js",
+    "test": "node --test",
+    "seed:basicfit": "node scripts/build-basicfit-seed.mjs",
+    "import:basicfit": "node scripts/import-basicfit-to-store.mjs"
+  }
+}

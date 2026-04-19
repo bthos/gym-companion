@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1",
+  "packages": [
+    {
+      "packageId": "eu.basicfit.malaga-matrix",
+      "version": "2026.03.0",
+      "vendor": "basicfit",
+      "displayName": "Basic-Fit Málaga (Matrix Aura catalog)",
+      "regions": ["ES-MA"],
+      "publisher": "community-basicfit-rutina",
+      "capabilities": ["sites", "equipment_catalog"],
+      "download": {
+        "url": "",
+        "format": "basicfit-bundle",
+        "artifactPath": "data/marketplace/samples/malaga-matrix-placeholder.bundle.json"
+      },
+      "integrity": {
+        "sha256": "a929a841203c95a86db2992920774015ce60e539eab96321eb7f1b0908584c64"
+      }
+    },
+    {
+      "packageId": "eu.gym-companion.samples.minimal-basicfit",
+      "version": "1.0.0",
+      "vendor": "basicfit",
+      "displayName": "Minimal Basic-Fit bundle (sample, same pipeline as production)",
+      "regions": ["ES-MA"],
+      "publisher": "gym-companion",
+      "capabilities": ["sites", "equipment_catalog"],
+      "download": {
+        "url": "",
+        "format": "basicfit-bundle",
+        "artifactPath": "data/marketplace/samples/minimal-basicfit.bundle.json"
+      },
+      "integrity": {
+        "sha256": "3a98abd03c8cee164e7235af2b71922e3bda0383c8ceedfece0a2cd816a14929"
+      }
+    },
+    {
+      "packageId": "eu.gym-companion.samples.sandbox-vendor",
+      "version": "1.0.0",
+      "vendor": "sandbox",
+      "displayName": "Sandbox vendor (gym-provider-json pipeline)",
+      "regions": ["ZZ-TEST"],
+      "publisher": "gym-companion",
+      "capabilities": ["sites"],
+      "download": {
+        "url": "",
+        "format": "gym-provider-json",
+        "artifactPath": "data/marketplace/samples/sandbox-gym-provider.json"
+      },
+      "integrity": {
+        "sha256": "399041182bbf4bbf7c260797f7c00357ba0b3a27a136be9e95d285e38223a356"
+      }
+    }
+  ]
+}

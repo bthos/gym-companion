@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gym-companion.local/schema/marketplace-catalog.json",
+  "title": "Marketplace catalog index",
+  "type": "object",
+  "required": ["schemaVersion", "packages"],
+  "properties": {
+    "schemaVersion": { "type": "string" },
+    "packages": {
+      "type": "array",
+      "description": "Each item follows marketplace-package-manifest.schema.json"
+    }
+  }
+}

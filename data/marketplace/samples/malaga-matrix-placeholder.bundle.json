@@ -1,0 +1,17 @@
+{
+  "id": "gp_malaga_matrix_placeholder",
+  "slug": "basicfit-malaga-matrix",
+  "displayName": "Basic-Fit Málaga (Matrix Aura catalog) — placeholder bundle",
+  "region": "ES-MA",
+  "metadata": { "note": "Replace download.url in catalog with hosted bundle for production." },
+  "gyms": {
+    "metadata": { "city": "Málaga" },
+    "gyms": [{ "id": 100001, "name": "Matrix Aura placeholder club", "address": "Calle Demo 1" }]
+  },
+  "equipment": {
+    "metadata": {},
+    "equipment": [
+      { "id": "eq_matrix_1", "gyms": [100001], "names": { "en": "Matrix station (sample)" } }
+    ]
+  }
+}

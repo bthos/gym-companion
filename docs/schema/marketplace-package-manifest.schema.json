@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gym-companion.local/schema/marketplace-package-manifest.json",
+  "title": "Marketplace package manifest (catalog entry)",
+  "type": "object",
+  "required": ["packageId", "version", "vendor", "displayName", "download"],
+  "properties": {
+    "packageId": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "vendor": { "type": "string", "description": "Install pipeline selector, e.g. basicfit" },
+    "displayName": { "type": "string" },
+    "regions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "publisher": { "type": "string", "description": "Logical publisher id for allowlists" },
+    "capabilities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "e.g. sites, equipment_catalog"
+    },
+    "download": {
+      "type": "object",
+      "required": ["url", "format"],
+      "properties": {
+        "url": { "type": "string" },
+        "format": { "type": "string", "description": "e.g. basicfit-bundle, gym-provider-json" },
+        "artifactPath": {
+          "type": "string",
+          "description": "Repo-relative path under data/marketplace/samples/ (no ..); alternative to non-empty download.url for shipped samples"
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Required when download.url or artifactPath is set (enforced at install time)"
+        },
+        "ed25519Signature": {
+          "type": "string",
+          "description": "Base64-encoded 64-byte detached Ed25519 signature over raw package bytes"
+        },
+        "ed25519PublicKey": {
+          "type": "string",
+          "description": "Optional base64-encoded 32-byte public key when not using MARKETPLACE_SIGNING_PUBLIC_KEY_BASE64"
+        }
+      }
+    },
+    "schemaVersion": { "type": "string" }
+  }
+}

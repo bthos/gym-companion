@@ -1,0 +1,14 @@
+.artefacts/
+!.artefacts/BRIEF.md
+node_modules/
+dist/
+build/
+coverage/
+.env
+.env.*
+.DS_Store
+*.log
+.tmp/
+# Local API state; generated marketplace payloads
+data/store.json
+data/marketplace/dist/
